@@ -1,0 +1,61 @@
+# PatchTST parameters
+patchtst:
+  mode: "predict"
+
+  context_length: 512
+  prediction_length: 128
+  distribution_output: null #"student_t"
+  loss: "mse"
+  huber_delta: 1.0 # NOTE: only used if loss is Huber loss
+
+  patch_length: 16
+  patch_stride: 16
+  num_hidden_layers: 8
+  d_model: 512
+  num_attention_heads: 8
+  channel_attention: true # This mixes across channels in the encoder 
+  ffn_dim: 512
+  
+  norm_type: "rmsnorm"
+  norm_eps: 1e-05
+  attention_dropout: 0.0
+  positional_dropout: 0.0
+  path_dropout: 0.0
+  ff_dropout: 0.0
+  bias: true
+  activation_function: "gelu"
+  pre_norm: true
+  use_cls_token: false
+  init_std: 0.02
+  scaling: "std"
+  do_mask_input: null
+  mask_type: "random"
+  random_mask_ratio: 0.5
+  num_forecast_mask_patches: 3
+  channel_consistent_masking: false
+  unmasked_channel_indices: null
+  mask_value: 0
+  pooling_type: "max"
+  head_dropout: 0.0
+  num_parallel_samples: 100 # NOTE: only used in predict mode if distribution_output is not None
+
+  use_prompt_network: true
+
+  # rope positional embeddings
+  channel_rope: false  # use rope in channel attention
+  max_wavelength: 500
+  rope_percent: 0.75
+
+  # for initializing the encoder from an mlm checkpoint
+  pretrained_encoder_path: null
+
+  # for initializing the prediction model from an existing prediction model checkpoint
+  pretrained_pft_path: null
+
+  # for the dynamical embedding
+  use_dynamics_embedding: false
+  num_poly_feats: 120
+  poly_degrees: 2  # starting from 2 i.e. 2 means include 2nd and 3rd order terms
+  rff_trainable: false
+  rff_scale: 1.0
+  num_rff: 256

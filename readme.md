@@ -16,7 +16,8 @@ To overcome this generalization barrier, we propose ChaosNexus, a foundation mod
 
 # Dataset
 
-Obtain the released datasets from [[Baidu Drive]](https://pan.baidu.com/s/1YvWxKLFLXjzEtK29HK1Vqg?pwd=vjr8), Then place the downloaded data in the folder`./data`.
+Obtain the released major dataset from [[Hugging Face]](https://huggingface.co/datasets/GilpinLab/skew40), and the Weather-5K dataset from [[OneDrive]](https://hkustconnect-my.sharepoint.com/:u:/g/personal/thanad_connect_ust_hk/EZGm7DP0qstElZwafr_U2YoBk5Ryt9rv7P31OqnUBZUPAA?e=5r0wEo). 
+Then place the downloaded data in the folder`./data`.
 
 # Training
 

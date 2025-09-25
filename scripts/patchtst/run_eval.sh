@@ -1,7 +1,7 @@
 #!/bin/bash
 main_dir=$(cd "$(dirname "$0")/../.." && pwd)
 echo "main_dir: $main_dir"
-checkpoint_dir="./checkpoints/Nexus1.0-base/checkpoint-final"
+checkpoint_dir="./checkpoints/run-0/checkpoint-final"
 
 ulimit -n 99999
 
@@ -67,7 +67,7 @@ ulimit -n 99999
 # echo "run_names: ${run_names[@]}"
 
 test_data_dirs=(
-    ./data/new_skew40/single_test
+    ./data/test
 )
 
 # --- START: Modified section (replaces jq) ---
@@ -99,10 +99,10 @@ python scripts/patchtst/evaluate.py \
     eval.context_length=512 \
     eval.prediction_length=512 \
     eval.limit_prediction_length=false \
-    eval.metrics_save_dir=./eval_results/patchtst/Rossler_Bouali/test_example \
+    eval.metrics_save_dir=./eval_results/patchtst/ChaosNexus/test_example \
     eval.metrics_fname=metrics \
     eval.overwrite=true \
-    eval.device=cuda:1 \
+    eval.device=cuda:0 \
     eval.save_labels=true \
     eval.save_predictions=true \
-    eval.save_contexts=true \
+    eval.save_contexts=true

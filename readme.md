@@ -16,6 +16,10 @@ To overcome this generalization barrier, we propose ChaosNexus, a foundation mod
 - Python 3.11.0
 - PyTorch 2.2.1+cu121
 
+# Dataset
+
+Obtain the released datasets from [[Baidu Drive]](https://pan.baidu.com/s/1YvWxKLFLXjzEtK29HK1Vqg?pwd=vjr8), Then place the downloaded data in the folder`./data`.
+
 # Training
 
 ```

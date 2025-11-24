@@ -50,30 +50,30 @@ if [ "$DEBUG" -eq 0 ]; then
         CUDA_VISIBLE_DEVICES=$CUDA_DEVICES OMP_NUM_THREADS=$CORES_PER_JOB python3 -m torch.distributed.run \
                 --nproc-per-node $NUM_DEVICES \
                 --master-port 29536 \
-                scripts/patchtst/train.py \
+                scripts/scaleformer/train.py \
                 shuffle_buffer_length=100_000 \
                 train_data_dirs=$train_data_dirs_json \
-                patchtst.mode=predict \
-                patchtst.use_dynamics_embedding=true \
-                patchtst.pretrained_encoder_path=null \
-                patchtst.context_length=512 \
-                patchtst.prediction_length=128 \
-                patchtst.patch_length=8 \
-                patchtst.patch_stride=8 \
-                patchtst.num_hidden_layers=8 \
-                patchtst.num_attention_heads=8 \
-                patchtst.d_model=48 \
-                patchtst.num_rff=24 \
-                patchtst.rff_scale=1.0 \
-                patchtst.rff_trainable=false \
-                patchtst.num_poly_feats=8 \
-                patchtst.poly_degrees=2 \
-                patchtst.channel_attention=true \
-                patchtst.max_wavelength=500 \
-                patchtst.rope_percent=0.75 \
-                patchtst.pooling_type=mean \
-                patchtst.loss=mse \
-                patchtst.distribution_output=null \
+                scaleformer.mode=predict \
+                scaleformer.use_dynamics_embedding=true \
+                scaleformer.pretrained_encoder_path=null \
+                scaleformer.context_length=512 \
+                scaleformer.prediction_length=128 \
+                scaleformer.patch_length=8 \
+                scaleformer.patch_stride=8 \
+                scaleformer.num_hidden_layers=8 \
+                scaleformer.num_attention_heads=8 \
+                scaleformer.d_model=48 \
+                scaleformer.num_rff=24 \
+                scaleformer.rff_scale=1.0 \
+                scaleformer.rff_trainable=false \
+                scaleformer.num_poly_feats=8 \
+                scaleformer.poly_degrees=2 \
+                scaleformer.channel_attention=true \
+                scaleformer.max_wavelength=500 \
+                scaleformer.rope_percent=0.75 \
+                scaleformer.pooling_type=mean \
+                scaleformer.loss=mse \
+                scaleformer.distribution_output=null \
                 train.per_device_train_batch_size=1024 \
                 train.max_steps=200000 \
                 train.save_steps=10000 \
@@ -84,11 +84,11 @@ if [ "$DEBUG" -eq 0 ]; then
                 train.output_dir="./checkpoints/" \
                 "$@"
 else  # this mode allows for breakpoints inside model code
-        CUDA_VISIBLE_DEVICES=0 python scripts/patchtst/train.py \
+        CUDA_VISIBLE_DEVICES=0 python scripts/scaleformer/train.py \
                 run_name=DEBUG \
-                patchtst.pretrained_encoder_path=null \
+                scaleformer.pretrained_encoder_path=null \
                 shuffle_buffer_length=100 \
-                patchtst.mode=predict \
+                scaleformer.mode=predict \
                 train.ddp_backend=null \
                 train.torch_compile=false \
                 "$@"

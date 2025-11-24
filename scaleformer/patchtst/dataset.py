@@ -1,7 +1,3 @@
-"""
-Dataset for PatchTST
-"""
-
 import itertools
 from dataclasses import dataclass
 from functools import partial

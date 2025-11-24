@@ -106,7 +106,7 @@ if MODEL_NAME == "Nexus":
             return f"{num / 1e6:.2f}M"
 
         print("="*60)
-        print("Model Parameter Analysis (PatchTST with MoE)")
+        print("Model Parameter Analysis (Scaleformer with MoE)")
         print("="*60)
         print(f"Total Parameters: {format_M(total_params)}")
         print(f"Activated Parameters: {format_M(total_activated_params)}")

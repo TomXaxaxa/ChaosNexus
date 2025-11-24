@@ -88,7 +88,7 @@ test_data_dirs_json+="]" # Close the JSON array string
 
 echo "test_data_dirs: $test_data_dirs_json"
 
-python scripts/patchtst/evaluate.py \
+python scripts/scaleformer/evaluate.py \
     eval.mode=predict \
     eval.checkpoint_path=$checkpoint_dir \
     eval.data_paths_lst=$test_data_dirs_json \
@@ -99,7 +99,7 @@ python scripts/patchtst/evaluate.py \
     eval.context_length=512 \
     eval.prediction_length=512 \
     eval.limit_prediction_length=false \
-    eval.metrics_save_dir=./eval_results/patchtst/NEXUS-test/test_example \
+    eval.metrics_save_dir=./eval_results/scaleformer/NEXUS-test/test_example \
     eval.metrics_fname=metrics \
     eval.overwrite=true \
     eval.device=cuda:6 \

@@ -12,7 +12,7 @@ eval:
   num_subdirs: null
   num_samples_per_subdir: null
 
-  # inference mode for patchtst
+  # inference mode for scaleformer
   sliding_context: true
 
   save_contexts: false

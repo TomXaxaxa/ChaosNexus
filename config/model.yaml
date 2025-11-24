@@ -1,5 +1,5 @@
-# PatchTST parameters
-patchtst:
+# scaleformer parameters
+scaleformer:
   mode: "predict"
 
   context_length: 512

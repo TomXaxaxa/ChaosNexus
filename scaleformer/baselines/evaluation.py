@@ -4,7 +4,7 @@ from typing import Callable
 import numpy as np
 from dysts.metrics import compute_metrics  # type: ignore
 from gluonts.itertools import batcher
-from scaleformer.patchtst.dataset import TimeSeriesDataset
+from scaleformer.scaleformer.dataset import TimeSeriesDataset
 from scaleformer.utils import safe_standardize
 from tqdm import tqdm
 

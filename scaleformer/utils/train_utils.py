@@ -20,7 +20,7 @@ from scaleformer.chronos.model import (
     ChronosConfig,
     ChronosModel,
 )
-from scaleformer.patchtst.patchtst import (
+from scaleformer.scaleformer.scaleformer import (
     PatchTSTConfig,
     PatchTSTForPrediction,
     PatchTSTForPretraining,

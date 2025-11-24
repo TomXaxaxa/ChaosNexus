@@ -8,8 +8,8 @@ import numpy as np
 import torch
 from dysts.metrics import compute_metrics
 from gluonts.itertools import batcher
-from scaleformer.patchtst.dataset import TimeSeriesDataset
-from scaleformer.patchtst.pipeline import PatchTSTPipeline
+from scaleformer.scaleformer.dataset import TimeSeriesDataset
+from scaleformer.scaleformer.pipeline import PatchTSTPipeline
 from scaleformer.utils import safe_standardize
 from tqdm import tqdm
 from scipy.signal import welch
@@ -19,7 +19,7 @@ from scipy.spatial.distance import cdist
 from dysts.metrics import estimate_kl_divergence
 from dysts.analysis import gp_dim
 import json
-import scaleformer.patchtst.patchtst as model_script
+import scaleformer.scaleformer.scaleformer as model_script
 
 from scipy.stats import spearmanr, sem, t
 from scipy.signal.windows import hann

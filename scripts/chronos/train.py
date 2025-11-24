@@ -18,8 +18,8 @@ from scaleformer.augmentations import (
     RandomTakensEmbedding,
     StandardizeTransform,
 )
-from scaleformer.patchtst.dataset import TimeSeriesDataset
-from scaleformer.patchtst.patchtst import (
+from scaleformer.scaleformer.dataset import TimeSeriesDataset
+from scaleformer.scaleformer.scaleformer import (
     PatchTSTForPrediction,
     PatchTSTForPretraining,
 )
@@ -142,7 +142,7 @@ def main(cfg):
         Filter(
             partial(
                 has_enough_observations,
-                min_length=cfg.min_past + cfg.patchtst.prediction_length,
+                min_length=cfg.min_past + cfg.scaleformer.prediction_length,
                 max_missing_prop=cfg.max_missing_prop,
             ),
             FileDataset(path=Path(data_path), freq="h", one_dim_target=False),  # type: ignore
@@ -217,10 +217,10 @@ def main(cfg):
     shuffled_train_dataset = TimeSeriesDataset(
         datasets=train_datasets,
         probabilities=probability,
-        context_length=cfg.patchtst.context_length,
-        prediction_length=cfg.patchtst.prediction_length,
+        context_length=cfg.scaleformer.context_length,
+        prediction_length=cfg.scaleformer.prediction_length,
         mode="train",
-        model_type=cfg.patchtst.mode,
+        model_type=cfg.scaleformer.mode,
         augmentations=augmentations,
         augmentation_probabilities=cfg.augmentations.probabilities,
         augmentation_rate=cfg.augmentations.augmentation_rate,
@@ -228,21 +228,21 @@ def main(cfg):
     ).shuffle(shuffle_buffer_length=cfg.shuffle_buffer_length)
 
     if (
-        cfg.patchtst.mode == "predict"
-        and cfg.patchtst.pretrained_encoder_path is not None
+        cfg.scaleformer.mode == "predict"
+        and cfg.scaleformer.pretrained_encoder_path is not None
     ):
         log_on_main(
-            f"Loading pretrained encoder from {cfg.patchtst.pretrained_encoder_path}",
+            f"Loading pretrained encoder from {cfg.scaleformer.pretrained_encoder_path}",
             logger,
         )
 
     log_on_main("Initializing model", logger)
 
     # model = load_patchtst_model(
-    #     mode=cfg.patchtst.mode,
-    #     model_config=dict(cfg.patchtst),
-    #     pretrained_encoder_path=cfg.patchtst.pretrained_encoder_path,
-    #     pretained_checkpoint=cfg.patchtst.pretrained_pft_path,
+    #     mode=cfg.scaleformer.mode,
+    #     model_config=dict(cfg.scaleformer),
+    #     pretrained_encoder_path=cfg.scaleformer.pretrained_encoder_path,
+    #     pretained_checkpoint=cfg.scaleformer.pretrained_pft_path,
     # )
     PRETRAINED_MODEL_PATH = "./checkpoints/Nexus1.0-base/checkpoint-final"
     model = PatchTSTForPrediction.from_pretrained(PRETRAINED_MODEL_PATH)
@@ -324,7 +324,7 @@ def main(cfg):
         model.save_pretrained(output_dir / "checkpoint-final")  # type: ignore
         save_training_info(
             output_dir / "checkpoint-final",
-            model_config=OmegaConf.to_container(cfg.patchtst, resolve=True),  # type: ignore
+            model_config=OmegaConf.to_container(cfg.scaleformer, resolve=True),  # type: ignore
             train_config=OmegaConf.to_container(cfg.train, resolve=True),  # type: ignore
             all_config=OmegaConf.to_container(cfg, resolve=True),  # type: ignore
         )

@@ -7,12 +7,12 @@ import hydra
 import numpy as np
 import torch
 import transformers
-from scaleformer.patchtst.dataset import TimeSeriesDataset
-from scaleformer.patchtst.evaluation import (
+from scaleformer.scaleformer.dataset import TimeSeriesDataset
+from scaleformer.scaleformer.evaluation import (
     evaluate_forecasting_model,
     evaluate_mlm_model,
 )
-from scaleformer.patchtst.pipeline import PatchTSTPipeline
+from scaleformer.scaleformer.pipeline import PatchTSTPipeline
 from scaleformer.utils import (
     get_dim_from_dataset,
     get_eval_data_dict,

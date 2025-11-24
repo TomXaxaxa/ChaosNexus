@@ -1,15 +1,9 @@
-"""
-PatchTST model wrapper for the forecaster and masked model
-
-TODO: This whole thing is kinda useless, figure out how to gracefully deprecate
-"""
-
 import warnings
 from dataclasses import dataclass
 from typing import Callable
 
 import torch
-from scaleformer.patchtst.patchtst import (
+from scaleformer.scaleformer.scaleformer import (
     PatchTSTForPrediction,
     PatchTSTForPretraining,
 )

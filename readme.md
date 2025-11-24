@@ -74,6 +74,9 @@ After downloading the data to `./data`, convert the format using:
 python ./scripts/transform_weather.py
 ```
 
+**Fine-tuning Configuration**
+Before starting the fine-tuning process, you must modify the model initialization logic. Please open `./scripts/train.py`, locate the `Initialize model` section, comment out the currently active code block, and uncomment the alternative block specifically for fine-tuning.
+
 **Inference**
 Run the prediction script. **Crucially**, you must ensure the following flags are set to `true` to generate the necessary output files for benchmarking:
 ```bash

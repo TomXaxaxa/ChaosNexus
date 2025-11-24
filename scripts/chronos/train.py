@@ -1,5 +1,8 @@
+"""
+Training/fine-tuning script, adapted from chronos-forecasting
+"""
+
 import logging
-import os
 from functools import partial
 from pathlib import Path
 
@@ -8,77 +11,30 @@ import torch
 import transformers
 from gluonts.dataset.common import FileDataset
 from gluonts.itertools import Filter
+from gluonts.transform import LastValueImputation
 from omegaconf import OmegaConf
 from scaleformer.augmentations import (
     RandomAffineTransform,
     RandomConvexCombinationTransform,
-    RandomDimSelectionTransform,
     RandomFourierSeries,
     RandomPhaseSurrogate,
     RandomTakensEmbedding,
     StandardizeTransform,
 )
-from scaleformer.scaleformer.dataset import TimeSeriesDataset
-from scaleformer.scaleformer.scaleformer import (
-    PatchTSTForPrediction,
-    PatchTSTForPretraining,
-)
-from scaleformer.schedulers import Scheduler, SchedulerLoggingCallback
+from scaleformer.chronos.dataset import ChronosDataset
+from scaleformer.chronos.model import ChronosConfig
 from scaleformer.utils import (
     ensure_contiguous,
     get_next_path,
     has_enough_observations,
     is_main_process,
-    load_patchtst_model,
+    load_chronos_model,
     log_on_main,
     save_training_info,
 )
-from transformers import (
-    Trainer,
-    TrainingArguments,
-)
+from transformers import Trainer, TrainingArguments
 
 import wandb
-import torch._dynamo
-torch._dynamo.config.cache_size_limit = 256
-
-logger = logging.getLogger(__name__)
-
-
-class CustomTrainer(Trainer):
-    def __init__(
-        self,
-        model: PatchTSTForPretraining | PatchTSTForPrediction,
-        args: TrainingArguments,
-        scheduler: Scheduler,
-        **kwargs,
-    ):
-        super().__init__(model, args, **kwargs)
-        self.scheduler = scheduler
-
-    def compute_loss(self, model, inputs, return_outputs=False):
-        """
-        How the loss is computed by Trainer. By default, all models return the loss in the first element.
-        """
-        epoch = float(self.state.epoch)  # type: ignore
-        schedule_param = torch.tensor(self.scheduler(epoch))
-
-        outputs = model(**inputs, schedule_param=schedule_param)
-
-        # Save past state if it exists
-        # TODO: this needs to be fixed and made cleaner later (HF comment)
-        if self.args.past_index >= 0:
-            self._past = outputs[self.args.past_index]
-
-        if isinstance(outputs, dict) and "loss" not in outputs:
-            raise ValueError(
-                "The model did not return a loss from the inputs, only the following keys: "
-                f"{','.join(outputs.keys())}. For reference, the inputs it received are {','.join(inputs.keys())}."
-            )
-        # We don't use .loss here since the model may return tuples instead of ModelOutput.
-        loss = outputs["loss"] if isinstance(outputs, dict) else outputs[0]
-
-        return (loss, outputs) if return_outputs else loss
 
 
 @hydra.main(config_path="../../config", config_name="config", version_base=None)
@@ -93,9 +49,12 @@ def main(cfg):
             sync_tensorboard=False,  # auto-upload tensorboard metrics
             group=cfg.wandb.group_name,
             resume=cfg.wandb.resume,
-            id=cfg.wandb.resume_run_id,
+            tags=cfg.wandb.tags,
         )
         log_on_main(f"Wandb initialized: {run.id}", logger)
+
+    # check model type is valid
+    assert cfg.chronos.model_type in ["seq2seq", "causal"]
 
     # set floating point precision
     use_tf32 = cfg.train.tf32
@@ -117,13 +76,17 @@ def main(cfg):
     transformers.set_seed(seed=cfg.train.seed)
 
     # get train data paths
-    train_data_dir_lst = cfg.train_data_dirs
     train_data_paths = []
-    for train_data_dir in train_data_dir_lst:
-        train_data_dir = os.path.expandvars(train_data_dir)
-        train_data_paths.extend(
-            filter(lambda file: file.is_file(), Path(train_data_dir).rglob("*"))
-        )
+    if cfg.train_data_dirs is not None:
+        for train_data_dirs in cfg.train_data_dirs:
+            train_data_paths.extend(
+                list(
+                    filter(
+                        lambda file: file.is_file(), Path(train_data_dirs).rglob("*")
+                    )
+                )
+            )
+
     # create a new output directory to save results
     output_dir = get_next_path(
         cfg.run_name if cfg.run_name else "run",
@@ -133,19 +96,17 @@ def main(cfg):
     )
 
     log_on_main(f"Logging dir: {output_dir}", logger)
-    log_on_main(
-        f"Loading and filtering {len(train_data_paths)} datasets for training from directories: {train_data_dir_lst}",
-        logger,
-    )
+    log_on_main(f"Loading and filtering {len(train_data_paths)} datasets ", logger)
 
+    # load datasets and apply loading filters on the fly
     train_datasets = [
         Filter(
             partial(
                 has_enough_observations,
-                min_length=cfg.min_past + cfg.scaleformer.prediction_length,
+                min_length=cfg.min_past + cfg.chronos.prediction_length,
                 max_missing_prop=cfg.max_missing_prop,
             ),
-            FileDataset(path=Path(data_path), freq="h", one_dim_target=False),  # type: ignore
+            FileDataset(path=Path(data_path), one_dim_target=False, freq="h"),  # type: ignore
         )
         for data_path in train_data_paths
     ]
@@ -168,6 +129,40 @@ def main(cfg):
         )
         dataloader_num_workers = len(train_datasets)
 
+    chronos_config = ChronosConfig(
+        tokenizer_class=cfg.chronos.tokenizer_class,
+        tokenizer_kwargs=dict(cfg.chronos.tokenizer_kwargs),
+        n_tokens=cfg.chronos.n_tokens,
+        n_special_tokens=cfg.chronos.n_special_tokens,
+        pad_token_id=cfg.chronos.pad_token_id,
+        eos_token_id=cfg.chronos.eos_token_id,
+        use_eos_token=cfg.chronos.use_eos_token,
+        model_type=cfg.chronos.model_type,
+        context_length=cfg.chronos.context_length,
+        prediction_length=cfg.chronos.prediction_length,
+        num_samples=cfg.chronos.num_samples,
+        temperature=cfg.chronos.temperature,
+        top_k=cfg.chronos.top_k,
+        top_p=cfg.chronos.top_p,
+    )
+    tokenizer = chronos_config.create_tokenizer()
+
+    log_on_main(f"Initializing model: {cfg.chronos.model_id}", logger)
+    model = load_chronos_model(
+        model_id=cfg.chronos.model_id,
+        model_type=cfg.chronos.model_type,
+        vocab_size=cfg.chronos.n_tokens,
+        random_init=cfg.chronos.random_init,
+        tie_embeddings=cfg.chronos.tie_embeddings,
+        pad_token_id=cfg.chronos.pad_token_id,
+        eos_token_id=cfg.chronos.eos_token_id,
+        chronos_config=chronos_config,
+    )
+
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    log_on_main(f"Total trainable parameters: {trainable_params:,}", logger)
+
+    # Note: these augmentations are applied to the multivariate target traj
     augmentations = [
         RandomTakensEmbedding(
             lag_range=cfg.augmentations.lag_range,
@@ -209,47 +204,26 @@ def main(cfg):
         logger,
     )
 
-    transforms: list = [
-        StandardizeTransform(),
-        RandomDimSelectionTransform(num_dims=cfg.fixed_dim),
-    ]
+    transforms: list = [StandardizeTransform()]
 
-    shuffled_train_dataset = TimeSeriesDataset(
+    shuffled_train_dataset = ChronosDataset(
         datasets=train_datasets,
         probabilities=probability,
-        context_length=cfg.scaleformer.context_length,
-        prediction_length=cfg.scaleformer.prediction_length,
+        tokenizer=tokenizer,
+        context_length=cfg.chronos.context_length,
+        prediction_length=cfg.chronos.prediction_length,
+        min_past=cfg.min_past,
+        model_type=cfg.chronos.model_type,
+        imputation_method=LastValueImputation()
+        if cfg.chronos.model_type == "causal"
+        else None,
         mode="train",
-        model_type=cfg.scaleformer.mode,
         augmentations=augmentations,
-        augmentation_probabilities=cfg.augmentations.probabilities,
         augmentation_rate=cfg.augmentations.augmentation_rate,
+        augmentation_probabilities=cfg.augmentations.probabilities,
         transforms=transforms,
     ).shuffle(shuffle_buffer_length=cfg.shuffle_buffer_length)
 
-    if (
-        cfg.scaleformer.mode == "predict"
-        and cfg.scaleformer.pretrained_encoder_path is not None
-    ):
-        log_on_main(
-            f"Loading pretrained encoder from {cfg.scaleformer.pretrained_encoder_path}",
-            logger,
-        )
-
-    log_on_main("Initializing model", logger)
-
-    # model = load_patchtst_model(
-    #     mode=cfg.scaleformer.mode,
-    #     model_config=dict(cfg.scaleformer),
-    #     pretrained_encoder_path=cfg.scaleformer.pretrained_encoder_path,
-    #     pretained_checkpoint=cfg.scaleformer.pretrained_pft_path,
-    # )
-    PRETRAINED_MODEL_PATH = "./checkpoints/Nexus1.0-base/checkpoint-final"
-    model = PatchTSTForPrediction.from_pretrained(PRETRAINED_MODEL_PATH)
-
-    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    log_on_main(f"Total trainable parameters: {trainable_params:,}", logger)
-    # Define training args
     training_args = TrainingArguments(
         run_name=cfg.run_name,
         output_dir=str(output_dir),
@@ -274,11 +248,10 @@ def main(cfg):
         dataloader_num_workers=dataloader_num_workers,
         dataloader_prefetch_factor=cfg.train.dataloader_prefetch_factor,
         tf32=use_tf32,  # remove this if not using Ampere GPUs (e.g., A100)
-        bf16=True,      # using only when flash attention is enabled
         torch_compile=cfg.train.torch_compile,
         ddp_find_unused_parameters=cfg.train.ddp_find_unused_parameters,
-        ddp_backend=cfg.train.ddp_backend,
         remove_unused_columns=cfg.train.remove_unused_columns,
+        ddp_backend=cfg.train.ddp_backend,
         seed=cfg.train.seed,
         resume_from_checkpoint=cfg.train.resume_from_checkpoint,
     )
@@ -287,32 +260,9 @@ def main(cfg):
     # This speeds up training and allows checkpoint saving by transformers Trainer
     ensure_contiguous(model)
 
-    scheduler_args = dict(cfg.scheduler)
-    if scheduler_args.pop("enabled", False):
-        log_on_main(
-            f"Using {scheduler_args['schedule_name']} scheduler for {scheduler_args['schedule_value_name']}",
-            logger,
-        )
-        value_name = scheduler_args.pop("schedule_value_name", "schedule_param")
-        scheduler = Scheduler(**scheduler_args)
-
-        logging_callback = SchedulerLoggingCallback(
-            scheduler=scheduler,
-            logger=logger,
-            log_interval=cfg.train.log_steps,
-            log_value_name=value_name,
-        )
-        trainer = CustomTrainer(
-            model=model,
-            args=training_args,
-            train_dataset=shuffled_train_dataset,
-            scheduler=scheduler,
-            callbacks=[logging_callback],
-        )
-    else:
-        trainer = Trainer(
-            model=model, args=training_args, train_dataset=shuffled_train_dataset
-        )
+    trainer = Trainer(
+        model=model, args=training_args, train_dataset=shuffled_train_dataset
+    )
 
     log_on_main("Training", logger)
     trainer.train(
@@ -321,10 +271,10 @@ def main(cfg):
 
     # save final model checkpoint and training info locally
     if is_main_process():
-        model.save_pretrained(output_dir / "checkpoint-final")  # type: ignore
+        model.save_pretrained(output_dir / "checkpoint-final")
         save_training_info(
             output_dir / "checkpoint-final",
-            model_config=OmegaConf.to_container(cfg.scaleformer, resolve=True),  # type: ignore
+            model_config=vars(chronos_config),  # TODO: add model_id to this
             train_config=OmegaConf.to_container(cfg.train, resolve=True),  # type: ignore
             all_config=OmegaConf.to_container(cfg, resolve=True),  # type: ignore
         )
@@ -335,4 +285,7 @@ def main(cfg):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
     main()

@@ -1,7 +1,7 @@
 import os
 import glob
 import numpy as np
-import scaleformers as pd
+import pandas as pd
 from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
 import functools

@@ -4,7 +4,7 @@
 import os
 import glob
 import numpy as np
-import scaleformers as pd
+import pandas as pd
 import torch
 from scipy.stats import sem, t
 from tqdm import tqdm

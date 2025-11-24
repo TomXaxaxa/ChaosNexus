@@ -4,7 +4,7 @@ from typing import Any, Literal
 
 import matplotlib.pyplot as plt
 import numpy as np
-import scaleformers as pd
+import pandas as pd
 from matplotlib import patches as mpatches
 from matplotlib.patches import FancyArrowPatch
 from mpl_toolkits.mplot3d.proj3d import proj_transform

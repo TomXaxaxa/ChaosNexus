@@ -4,8 +4,8 @@ from typing import Callable
 import numpy as np
 from dysts.metrics import compute_metrics  # type: ignore
 from gluonts.itertools import batcher
-from panda.patchtst.dataset import TimeSeriesDataset
-from panda.utils import safe_standardize
+from scaleformer.patchtst.dataset import TimeSeriesDataset
+from scaleformer.utils import safe_standardize
 from tqdm import tqdm
 
 

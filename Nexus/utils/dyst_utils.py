@@ -9,8 +9,8 @@ import numpy as np
 from dysts.systems import DynSys  # type: ignore
 from scipy.spatial.distance import pdist
 
-from panda.coupling_maps import RandomAdditiveCouplingMap
-from panda.skew_system import SkewProduct
+from scaleformer.coupling_maps import RandomAdditiveCouplingMap
+from scaleformer.skew_system import SkewProduct
 
 
 def init_skew_system_from_params(

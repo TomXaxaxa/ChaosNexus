@@ -23,7 +23,7 @@ from gluonts.transform import (
     MissingValueImputation,
     ValidationSplitSampler,
 )
-from panda.chronos.model import ChronosTokenizer
+from scaleformer.chronos.model import ChronosTokenizer
 from torch.utils.data import IterableDataset, get_worker_info
 
 # used for prediction length in test mode when window style is single

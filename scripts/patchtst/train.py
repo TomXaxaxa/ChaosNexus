@@ -9,7 +9,7 @@ import transformers
 from gluonts.dataset.common import FileDataset
 from gluonts.itertools import Filter
 from omegaconf import OmegaConf
-from panda.augmentations import (
+from scaleformer.augmentations import (
     RandomAffineTransform,
     RandomConvexCombinationTransform,
     RandomDimSelectionTransform,
@@ -18,13 +18,13 @@ from panda.augmentations import (
     RandomTakensEmbedding,
     StandardizeTransform,
 )
-from panda.patchtst.dataset import TimeSeriesDataset
-from panda.patchtst.patchtst import (
+from scaleformer.patchtst.dataset import TimeSeriesDataset
+from scaleformer.patchtst.patchtst import (
     PatchTSTForPrediction,
     PatchTSTForPretraining,
 )
-from panda.schedulers import Scheduler, SchedulerLoggingCallback
-from panda.utils import (
+from scaleformer.schedulers import Scheduler, SchedulerLoggingCallback
+from scaleformer.utils import (
     ensure_contiguous,
     get_next_path,
     has_enough_observations,

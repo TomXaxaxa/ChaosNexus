@@ -11,7 +11,7 @@ from typing import Callable, Dict, List, Literal, Optional, Tuple
 
 import numpy as np
 from dysts.analysis import max_lyapunov_exponent_rosenstein
-from panda.utils import run_zero_one_sweep
+from scaleformer.utils import run_zero_one_sweep
 from scipy.fft import rfft
 from scipy.signal import find_peaks
 from scipy.spatial.distance import cdist

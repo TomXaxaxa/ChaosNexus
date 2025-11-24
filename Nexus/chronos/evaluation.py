@@ -16,9 +16,9 @@ from dysts.analysis import gp_dim 
 import dysts.flows as flows
 
 from gluonts.itertools import batcher
-from panda.chronos.dataset import ChronosDataset
-from panda.chronos.pipeline import ChronosPipeline
-from panda.utils import safe_standardize
+from scaleformer.chronos.dataset import ChronosDataset
+from scaleformer.chronos.pipeline import ChronosPipeline
+from scaleformer.utils import safe_standardize
 
 def _format_ci(values: list | np.ndarray, confidence: float = 0.95) -> str:
     data = np.array(values)

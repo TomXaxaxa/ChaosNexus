@@ -7,13 +7,13 @@ import hydra
 import numpy as np
 import torch
 import transformers
-from panda.patchtst.dataset import TimeSeriesDataset
-from panda.patchtst.evaluation import (
+from scaleformer.patchtst.dataset import TimeSeriesDataset
+from scaleformer.patchtst.evaluation import (
     evaluate_forecasting_model,
     evaluate_mlm_model,
 )
-from panda.patchtst.pipeline import PatchTSTPipeline
-from panda.utils import (
+from scaleformer.patchtst.pipeline import PatchTSTPipeline
+from scaleformer.utils import (
     get_dim_from_dataset,
     get_eval_data_dict,
     log_on_main,
@@ -22,7 +22,7 @@ from panda.utils import (
 )
 
 import torch.distributed as dist
-from panda.utils import is_main_process
+from scaleformer.utils import is_main_process
 import torch.nn as nn
 
 from collections import defaultdict

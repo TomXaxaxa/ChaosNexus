@@ -13,10 +13,10 @@ from typing import Callable, Dict, Tuple
 import hydra
 import matplotlib.pyplot as plt
 import numpy as np
-import panda.attractor as attractor
+import scaleformer.attractor as attractor
 from dysts.analysis import max_lyapunov_exponent_rosenstein  # type: ignore
-from panda.attractor import AttractorValidator
-from panda.utils import (
+from scaleformer.attractor import AttractorValidator
+from scaleformer.utils import (
     make_ensemble_from_arrow_dir,
     plot_grid_trajs_multivariate,
     safe_standardize,

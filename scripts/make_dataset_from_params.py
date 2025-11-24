@@ -10,7 +10,7 @@ from typing import Callable
 import hydra
 import numpy as np
 
-from panda.attractor import (
+from scaleformer.attractor import (
     check_boundedness,
     check_lyapunov_exponent,
     check_not_fixed_point,
@@ -20,9 +20,9 @@ from panda.attractor import (
     check_stationarity,
     check_zero_one_test,
 )
-from panda.dyst_data import DynSysSamplerRestartIC
-from panda.events import InstabilityEvent, TimeLimitEvent, TimeStepEvent
-from panda.utils import init_skew_system_from_params
+from scaleformer.dyst_data import DynSysSamplerRestartIC
+from scaleformer.events import InstabilityEvent, TimeLimitEvent, TimeStepEvent
+from scaleformer.utils import init_skew_system_from_params
 
 
 def default_attractor_tests(tests_to_use: list[str]) -> list[Callable]:

@@ -15,7 +15,7 @@ from gluonts.transform import (
     InstanceSplitter,
     ValidationSplitSampler,
 )
-from panda.chronos.dataset import (
+from scaleformer.chronos.dataset import (
     NumInstanceSampler,
     RegularWindowedSampler,
     SingleContextSampler,

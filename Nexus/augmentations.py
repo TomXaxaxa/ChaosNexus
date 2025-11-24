@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 import numpy as np
 from numpy.typing import NDArray
-from panda.utils import safe_standardize
+from scaleformer.utils import safe_standardize
 
 
 @dataclass

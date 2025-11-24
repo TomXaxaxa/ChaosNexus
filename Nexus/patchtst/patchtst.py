@@ -1,5 +1,3 @@
-"""Exposed PatchTST model, taken from HuggingFace transformers"""
-
 MODEL_NAME="Nexus"
 
 if MODEL_NAME == "Nexus":

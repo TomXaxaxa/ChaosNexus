@@ -62,7 +62,7 @@ if [ "$DEBUG" -eq 0 ]; then
     #    sampling.atol=1e-10 \
     #    sampling.rtol=1e-8 \
     #    sampling.silence_integration_errors=true \
-    #    sampling.data_dir=./panda/data/big_base_mixedp \
+    #    sampling.data_dir=./scaleformer/data/big_base_mixedp \
     #    sampling.rseed=21433 \
     #    sampling.verbose=false \
     #    events.verbose=false \
@@ -83,7 +83,7 @@ else
         sampling.atol=1e-10 \
         sampling.rtol=1e-8 \
         sampling.silence_integration_errors=true \
-        sampling.data_dir=./panda/data/skew_debug \
+        sampling.data_dir=./scaleformer/data/skew_debug \
         sampling.rseed=414328 \
         sampling.ic_rseed=414 \
         sampling.verbose=false \

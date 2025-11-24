@@ -7,7 +7,7 @@ from typing import Callable
 
 import numpy as np
 from dysts.base import DynSys
-from panda.coupling_maps import RandomAdditiveCouplingMap
+from scaleformer.coupling_maps import RandomAdditiveCouplingMap
 
 logger = logging.getLogger(__name__)
 

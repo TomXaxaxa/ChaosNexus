@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import pandas as pd
+import scaleformers as pd
 import torch
 from gluonts.dataset.common import FileDataset
 from tqdm import tqdm

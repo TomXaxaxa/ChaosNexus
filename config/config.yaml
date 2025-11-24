@@ -26,7 +26,7 @@ hydra:
 # wandb parameters
 wandb:
   log: false
-  project_name: panda
+  project_name: scaleformer
   entity: null
   group_name: null
   resume: false

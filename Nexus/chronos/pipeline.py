@@ -12,12 +12,12 @@ from dataclasses import dataclass
 from typing import Any, List, Optional, Tuple, Union
 
 import torch
-from panda.chronos.model import (
+from scaleformer.chronos.model import (
     ChronosConfig,
     ChronosModel,
     ChronosTokenizer,
 )
-from panda.utils import left_pad_and_stack_1D
+from scaleformer.utils import left_pad_and_stack_1D
 from transformers import (
     AutoConfig,
     AutoModelForCausalLM,

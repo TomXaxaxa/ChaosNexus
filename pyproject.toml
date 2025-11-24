@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "panda"
-description = "Patched Attention for Nonlinear Dynamics"
+name = "ChaosNexus"
+description = "A Foundation Model for Universal Chaotic System Forecasting with Multi-scale Representations"
 version = "0.1.0"
 readme = "README.md"
 license = { text = "MIT" }  # SPDX license identifier
@@ -42,4 +42,4 @@ profile = ["memory_profiler", "psutil"]
 
 # Package data
 [tool.setuptools]
-packages = ["panda", "panda.utils"] 
+packages = ["scaleformer", "scaleformer.utils"] 

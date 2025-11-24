@@ -4,14 +4,14 @@ from functools import partial
 import hydra
 import numpy as np
 import transformers
-from panda.baselines.baselines import (
+from scaleformer.baselines.baselines import (
     FourierARIMABaseline,
     FourierBaseline,
     MeanBaseline,
 )
-from panda.baselines.evaluation import evaluate_forecasting_model
-from panda.patchtst.dataset import TimeSeriesDataset
-from panda.utils import (
+from scaleformer.baselines.evaluation import evaluate_forecasting_model
+from scaleformer.patchtst.dataset import TimeSeriesDataset
+from scaleformer.utils import (
     get_dim_from_dataset,
     get_eval_data_dict,
     log_on_main,

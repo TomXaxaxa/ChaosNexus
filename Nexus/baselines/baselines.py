@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 import numpy as np
-from panda.utils import safe_standardize
+from scaleformer.utils import safe_standardize
 from statsmodels.tsa.arima.model import ARIMA
 
 

@@ -16,11 +16,11 @@ import numpy as np
 import torch
 import torch.distributed as dist
 import transformers
-from panda.chronos.model import (
+from scaleformer.chronos.model import (
     ChronosConfig,
     ChronosModel,
 )
-from panda.patchtst.patchtst import (
+from scaleformer.patchtst.patchtst import (
     PatchTSTConfig,
     PatchTSTForPrediction,
     PatchTSTForPretraining,

@@ -4,13 +4,13 @@ from typing import Any, Literal
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
+import scaleformers as pd
 from matplotlib import patches as mpatches
 from matplotlib.patches import FancyArrowPatch
 from mpl_toolkits.mplot3d.proj3d import proj_transform
 from omegaconf import OmegaConf
 
-from panda.utils import safe_standardize
+from scaleformer.utils import safe_standardize
 
 DEFAULT_COLORS = list(plt.rcParams["axes.prop_cycle"].by_key()["color"])
 DEFAULT_MARKERS = ["o", "s", "v", "D", "X", "P", "H", "h", "d", "p", "x"]

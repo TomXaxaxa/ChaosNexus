@@ -10,8 +10,8 @@ import torch
 from dysts.analysis import gp_dim  # type: ignore
 from tqdm import tqdm
 
-from panda.patchtst.pipeline import PatchTSTPipeline
-from panda.utils import (
+from scaleformer.patchtst.pipeline import PatchTSTPipeline
+from scaleformer.utils import (
     compute_gp_dimension,
     get_eval_data_dict,
     log_on_main,

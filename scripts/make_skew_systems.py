@@ -13,7 +13,7 @@ import dysts.flows as flows
 import hydra
 import numpy as np
 from dysts.systems import DynSys, get_attractor_list
-from panda.attractor import (
+from scaleformer.attractor import (
     check_boundedness,
     check_lyapunov_exponent,
     check_not_fixed_point,
@@ -23,14 +23,14 @@ from panda.attractor import (
     check_stationarity,
     check_zero_one_test,
 )
-from panda.coupling_maps import (
+from scaleformer.coupling_maps import (
     RandomActivatedCouplingMap,
     RandomAdditiveCouplingMap,
 )
-from panda.dyst_data import DynSysSampler
-from panda.events import InstabilityEvent, TimeLimitEvent, TimeStepEvent
-from panda.sampling import OnAttractorInitCondSampler, SignedGaussianParamSampler
-from panda.skew_system import SkewProduct
+from scaleformer.dyst_data import DynSysSampler
+from scaleformer.events import InstabilityEvent, TimeLimitEvent, TimeStepEvent
+from scaleformer.sampling import OnAttractorInitCondSampler, SignedGaussianParamSampler
+from scaleformer.skew_system import SkewProduct
 
 import wandb
 

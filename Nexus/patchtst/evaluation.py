@@ -8,9 +8,9 @@ import numpy as np
 import torch
 from dysts.metrics import compute_metrics
 from gluonts.itertools import batcher
-from panda.patchtst.dataset import TimeSeriesDataset
-from panda.patchtst.pipeline import PatchTSTPipeline
-from panda.utils import safe_standardize
+from scaleformer.patchtst.dataset import TimeSeriesDataset
+from scaleformer.patchtst.pipeline import PatchTSTPipeline
+from scaleformer.utils import safe_standardize
 from tqdm import tqdm
 from scipy.signal import welch
 import dysts.flows as flows
@@ -19,7 +19,7 @@ from scipy.spatial.distance import cdist
 from dysts.metrics import estimate_kl_divergence
 from dysts.analysis import gp_dim
 import json
-import panda.patchtst.patchtst as model_script
+import scaleformer.patchtst.patchtst as model_script
 
 from scipy.stats import spearmanr, sem, t
 from scipy.signal.windows import hann

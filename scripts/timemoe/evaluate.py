@@ -6,9 +6,9 @@ import numpy as np
 import torch
 import transformers
 from gluonts.transform import LastValueImputation
-from panda.chronos.dataset import ChronosDataset
-from panda.chronos.evaluation import evaluate_chronos_forecast
-from panda.utils import (
+from scaleformer.chronos.dataset import ChronosDataset
+from scaleformer.chronos.evaluation import evaluate_chronos_forecast
+from scaleformer.utils import (
     get_dim_from_dataset,
     get_eval_data_dict,
     log_on_main,

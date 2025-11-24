@@ -28,8 +28,6 @@ train:
   ddp_find_unused_parameters: false
   remove_unused_columns: false
 
-  deepspeed_config: /data5/zhaobohao/panda/scripts/patchtst/deepspeed.json
-
 scheduler:
   enabled: false
   schedule_value_name: noise_scale

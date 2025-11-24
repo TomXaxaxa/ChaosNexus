@@ -14,10 +14,10 @@ import numpy as np
 from dysts.base import BaseDyn
 from dysts.sampling import BaseSampler
 from dysts.systems import make_trajectory_ensemble
-from panda.attractor import AttractorValidator
-from panda.sampling import OnAttractorInitCondSampler
-from panda.skew_system import SkewProduct
-from panda.utils import dict_demote_from_numpy, process_trajs, timeit
+from scaleformer.attractor import AttractorValidator
+from scaleformer.sampling import OnAttractorInitCondSampler
+from scaleformer.skew_system import SkewProduct
+from scaleformer.utils import dict_demote_from_numpy, process_trajs, timeit
 from tqdm import tqdm
 
 import wandb

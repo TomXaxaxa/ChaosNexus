@@ -9,11 +9,11 @@ from dataclasses import dataclass
 from typing import Callable
 
 import torch
-from panda.patchtst.patchtst import (
+from scaleformer.patchtst.patchtst import (
     PatchTSTForPrediction,
     PatchTSTForPretraining,
 )
-from panda.utils import left_pad_and_stack_multivariate
+from scaleformer.utils import left_pad_and_stack_multivariate
 
 
 class FixedSubsetChannelSampler:

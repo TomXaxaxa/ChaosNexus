@@ -19,6 +19,10 @@ To overcome this generalization barrier, we propose ChaosNexus, a foundation mod
 Obtain the released major dataset from [[Hugging Face]](https://huggingface.co/datasets/GilpinLab/skew40), and the Weather-5K dataset from [[OneDrive]](https://hkustconnect-my.sharepoint.com/:u:/g/personal/thanad_connect_ust_hk/EZGm7DP0qstElZwafr_U2YoBk5Ryt9rv7P31OqnUBZUPAA?e=5r0wEo). 
 Then place the downloaded data in the folder`./data`.
 
+# Pre-trained Models
+
+If you require the pre-trained parameters of ChaosNexus for reproduction or fine-tuning, please download them from [[Dropbox]](https://www.dropbox.com/scl/fo/i2r3ds0emg9sdcqe7vm9q/AHFx8RWPirS6dEUD6lT3Fig?rlkey=6ckgecajs35zbhek6hmpe0fel&st=7unoznyu&dl=0).
+
 # Experiment Reproduction
 
 ## 1. Major Dataset Experiments
@@ -78,6 +82,12 @@ eval.save_labels=true \
 eval.save_predictions=true \
 eval.save_contexts=true
 ```
+
+## 3. Baseline Models Reproduction
+
+To reproduce the results of other baseline models (control group) used for comparison in our paper, we utilize the **Time-Series-Library**. 
+
+Please refer to the official repository: [thuml/Time-Series-Library](https://github.com/thuml/Time-Series-Library) for the implementation of these advanced deep time series models. We follow the standard training and evaluation protocols provided in their library to ensure a fair comparison.
 
 **Benchmarking**
 Once the predictions are generated, run the benchmark script to obtain the final results:

@@ -28,17 +28,17 @@ To reproduce the results on the major dataset, please follow the instructions be
 ### Training
 
 **ChaosNexus**
-1. Open `./panda/patchtst/patchtst.py` and set the variable `MODEL_NAME` to `'Nexus'`.
+1. Open `./scaleformer/scaleformer/scaleformer.py` and set the variable `MODEL_NAME` to `'Nexus'`.
 2. Run the training script:
 ```bash
-bash ./scripts/patchtst/run_predict_finetune-Nexus.sh
+bash ./scripts/scaleformer/run_predict_finetune-Nexus.sh
 ```
 
 **Panda (Baseline)**
-1. Open `./panda/patchtst/patchtst.py` and set the variable `MODEL_NAME` to `'Panda'`.
+1. Open `./scaleformer/scaleformer/scaleformer.py` and set the variable `MODEL_NAME` to `'Panda'`.
 2. Run the training script:
 ```bash
-bash ./scripts/patchtst/run_predict_finetune-Panda.sh
+bash ./scripts/scaleformer/run_predict_finetune-Panda.sh
 ```
 
 **Chronos (Fine-tuning)**
@@ -52,7 +52,12 @@ bash ./scripts/chronos/run_finetune.sh
 
 After training is complete, evaluate the models using:
 ```bash
-bash ./scripts/patchtst/run_eval.sh
+bash ./scripts/scaleformer/run_eval.sh
+```
+
+or evaluate Chronos-SFT using:
+```bash
+bash ./scripts/chronos/run_eval.sh
 ```
 
 ## 2. Weather Dataset Experiments

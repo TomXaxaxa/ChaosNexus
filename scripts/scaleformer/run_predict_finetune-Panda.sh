@@ -75,7 +75,7 @@ if [ "$DEBUG" -eq 0 ]; then
                 scaleformer.loss=mse \
                 scaleformer.distribution_output=null \
                 train.per_device_train_batch_size=1024 \
-                train.max_steps=200000 \
+                train.max_steps=100000 \
                 train.save_steps=10000 \
                 train.log_steps=100 \
                 train.warmup_ratio=0.1 \

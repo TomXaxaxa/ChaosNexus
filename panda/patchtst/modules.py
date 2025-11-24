@@ -274,8 +274,12 @@ def apply_p_rope_to_qk(
     sin = torch.sin(sinusoid_inp)
     cos = torch.cos(sinusoid_inp)
 
+    # ==================== 新增的关键修复 ====================
+    # 将 sin 和 cos 强制转换回 query/key 的数据类型
+    # 因为三角函数计算可能为了精度而内部使用了 float32
     cos = cos.to(query_states.dtype)
     sin = sin.to(query_states.dtype)
+    # ======================================================
 
     query_first_half, query_second_half = torch.split(
         query_states, query_states.shape[-1] // 2, dim=-1

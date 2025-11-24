@@ -114,6 +114,7 @@ def main(cfg):
         log(f"dynamics embedding config: {dynamics_embedding_config}")
 
     pipeline.model.eval()
+    
     system_dims = {
         system_name: get_dim_from_dataset(test_data_dict[system_name][0])
         for system_name in test_data_dict
@@ -185,7 +186,44 @@ def main(cfg):
             ],
         )
         save_eval_results_fn(metrics)
+        
+        # ==================== 【修改后的代码】: 保存 trues(包含context) 和 preds 为 .pt 文件 ====================
+        # 要实现此功能, 必须在配置文件中同时设置 save_labels=True 和 save_contexts=True
+        if cfg.eval.save_labels and cfg.eval.save_contexts:
+            log("Saving trues (context + labels) and preds (predictions) as .pt files...")
+            
+            # 确保 contexts 和 labels 字典都已成功生成
+            if contexts is None or labels is None:
+                log("Error: 'contexts' or 'labels' is None. Cannot save concatenated files. Please check evaluation settings.")
+            else:
+                save_dir = cfg.eval.metrics_save_dir
+                os.makedirs(save_dir, exist_ok=True)
 
+                # 遍历每个被评估的系统/数据集
+                for system_name in labels.keys():
+                    # 定义文件名
+                    preds_filename = os.path.join(save_dir, f"predictions_{system_name}.pt")
+                    trues_filename = os.path.join(save_dir, f"labels_{system_name}.pt")
+
+                    # 【核心修改】: 将 context 和 labels 在时间维度(axis=2)上拼接
+                    # 假设数据维度为 (num_samples, num_channels, sequence_length)
+                    combined_trues = np.concatenate(
+                        [contexts[system_name], labels[system_name]], axis=2
+                    )
+
+                    # 从 numpy 数组转换为 torch 张量
+                    preds_tensor = torch.from_numpy(predictions[system_name])
+                    # 使用拼接后的'combined_trues'来创建张量
+                    trues_tensor = torch.from_numpy(combined_trues)
+
+                    # 保存张量
+                    torch.save(preds_tensor, preds_filename)
+                    torch.save(trues_tensor, trues_filename)
+                    log(f"  - 已保存 '{system_name}' 的预测值到: {preds_filename}")
+                    log(f"  - 已保存 '{system_name}' 的真实值 (context+labels) 到: {trues_filename}")
+        else:
+            log("Skipped saving since eval.save is not enabled.")
+        # =======================================================================================================
 
         if cfg.eval.save_predictions and cfg.eval.save_contexts:
             assert predictions is not None and contexts is not None
@@ -232,6 +270,6 @@ def main(cfg):
             process_trajs_fn(cfg.eval.timestep_masks_save_dir, timestep_masks)
     else:
         raise ValueError(f"Invalid eval mode: {cfg.eval.mode}")
-
+    
 if __name__ == "__main__":
     main()

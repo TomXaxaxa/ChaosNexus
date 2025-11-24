@@ -238,14 +238,14 @@ def main(cfg):
 
     log_on_main("Initializing model", logger)
 
-    model = load_patchtst_model(
-        mode=cfg.patchtst.mode,
-        model_config=dict(cfg.patchtst),
-        pretrained_encoder_path=cfg.patchtst.pretrained_encoder_path,
-        pretained_checkpoint=cfg.patchtst.pretrained_pft_path,
-    )
-    # PRETRAINED_MODEL_PATH = "./checkpoints/Nexus1.0-base/checkpoint-final"
-    # model = PatchTSTForPrediction.from_pretrained(PRETRAINED_MODEL_PATH)
+    # model = load_patchtst_model(
+    #     mode=cfg.patchtst.mode,
+    #     model_config=dict(cfg.patchtst),
+    #     pretrained_encoder_path=cfg.patchtst.pretrained_encoder_path,
+    #     pretained_checkpoint=cfg.patchtst.pretrained_pft_path,
+    # )
+    PRETRAINED_MODEL_PATH = "./checkpoints/Nexus1.0-base/checkpoint-final"
+    model = PatchTSTForPrediction.from_pretrained(PRETRAINED_MODEL_PATH)
 
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     log_on_main(f"Total trainable parameters: {trainable_params:,}", logger)

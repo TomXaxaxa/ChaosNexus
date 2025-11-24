@@ -9,6 +9,11 @@ done
 shift $((OPTIND - 1))
 
 train_data_dirs=(
+#     ./data/improved/skew_mixedp_ic16/train
+#     ./data/improved/final_skew40/train
+#     ./data/improved/final_skew40/train_z5_z10
+#     ./data/improved/final_base40/train
+#     ./data/improved/final_base40/train_z5_z10
       ./data/train
 )
 
@@ -38,12 +43,13 @@ if [ "$DEBUG" -eq 0 ]; then
         CORES_PER_GROUP=$(( $TOTAL_CORES / 2 ))
         CORES_PER_JOB=$(( $CORES_PER_GROUP / 4 ))
 
-        CUDA_DEVICES=0
+        CUDA_DEVICES=6
+        # CUDA_DEVICES=4,5,6,7
         NUM_DEVICES=$(echo "$CUDA_DEVICES" | tr -d ' ' | tr ',' '\n' | wc -l)
 
-        CUDA_VISIBLE_DEVICES=$CUDA_DEVICES OMP_NUM_THREADS=$CORES_PER_JOB torchrun \
+        CUDA_VISIBLE_DEVICES=$CUDA_DEVICES OMP_NUM_THREADS=$CORES_PER_JOB python3 -m torch.distributed.run \
                 --nproc-per-node $NUM_DEVICES \
-                --master-port 29500 \
+                --master-port 29536 \
                 scripts/patchtst/train.py \
                 shuffle_buffer_length=100_000 \
                 train_data_dirs=$train_data_dirs_json \
@@ -54,14 +60,14 @@ if [ "$DEBUG" -eq 0 ]; then
                 patchtst.prediction_length=128 \
                 patchtst.patch_length=8 \
                 patchtst.patch_stride=8 \
-                patchtst.num_hidden_layers=10 \
+                patchtst.num_hidden_layers=8 \
                 patchtst.num_attention_heads=8 \
                 patchtst.d_model=48 \
                 patchtst.num_rff=24 \
                 patchtst.rff_scale=1.0 \
                 patchtst.rff_trainable=false \
-                patchtst.num_poly_feats=12 \
-                patchtst.poly_degrees=8 \
+                patchtst.num_poly_feats=8 \
+                patchtst.poly_degrees=2 \
                 patchtst.channel_attention=true \
                 patchtst.max_wavelength=500 \
                 patchtst.rope_percent=0.75 \
@@ -69,9 +75,9 @@ if [ "$DEBUG" -eq 0 ]; then
                 patchtst.loss=mse \
                 patchtst.distribution_output=null \
                 train.per_device_train_batch_size=1024 \
-                train.max_steps=100000 \
+                train.max_steps=200000 \
                 train.save_steps=10000 \
-                train.log_steps=1000 \
+                train.log_steps=100 \
                 train.warmup_ratio=0.1 \
                 train.torch_compile=true \
                 train.weight_decay=0.0 \

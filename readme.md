@@ -12,23 +12,72 @@ To overcome this generalization barrier, we propose ChaosNexus, a foundation mod
 ## Environment
 - Tested OS: Linux
 - Python 3.11.0
-- PyTorch 2.2.1+cu121
+- PyTorch 2.8.0
 
 # Dataset
 
 Obtain the released major dataset from [[Hugging Face]](https://huggingface.co/datasets/GilpinLab/skew40), and the Weather-5K dataset from [[OneDrive]](https://hkustconnect-my.sharepoint.com/:u:/g/personal/thanad_connect_ust_hk/EZGm7DP0qstElZwafr_U2YoBk5Ryt9rv7P31OqnUBZUPAA?e=5r0wEo). 
 Then place the downloaded data in the folder`./data`.
 
-# Training
+# Experiment Reproduction
 
-```
-bash ./scripts/patchtst/run_predict_finetune.sh
+## 1. Major Dataset Experiments
+
+To reproduce the results on the major dataset, please follow the instructions below for different models.
+
+### Training
+
+**ChaosNexus**
+1. Open `./panda/patchtst/patchtst.py` and set the variable `MODEL_NAME` to `'Nexus'`.
+2. Run the training script:
+```bash
+bash ./scripts/patchtst/run_predict_finetune-Nexus.sh
 ```
 
-# Evaluation
-
+**Panda (Baseline)**
+1. Open `./panda/patchtst/patchtst.py` and set the variable `MODEL_NAME` to `'Panda'`.
+2. Run the training script:
+```bash
+bash ./scripts/patchtst/run_predict_finetune-Panda.sh
 ```
+
+**Chronos (Fine-tuning)**
+1. Download the public pre-trained weights.
+2. Run the fine-tuning script:
+```bash
+bash ./scripts/chronos/run_finetune.sh
+```
+
+### Evaluation
+
+After training is complete, evaluate the models using:
+```bash
 bash ./scripts/patchtst/run_eval.sh
+```
+
+## 2. Weather Dataset Experiments
+
+For the Weather-5K dataset, additional preprocessing and specific evaluation steps are required.
+
+**Preprocessing**
+After downloading the data to `./data`, convert the format using:
+```bash
+python ./scripts/transform_weather.py
+```
+
+**Inference**
+Run the prediction script. **Crucially**, you must ensure the following flags are set to `true` to generate the necessary output files for benchmarking:
+```bash
+# Ensure these arguments are included in your run command
+eval.save_labels=true \
+eval.save_predictions=true \
+eval.save_contexts=true
+```
+
+**Benchmarking**
+Once the predictions are generated, run the benchmark script to obtain the final results:
+```bash
+python ./scripts/benchmark_weather.py
 ```
 
 # License

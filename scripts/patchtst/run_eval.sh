@@ -1,7 +1,7 @@
 #!/bin/bash
 main_dir=$(cd "$(dirname "$0")/../.." && pwd)
 echo "main_dir: $main_dir"
-checkpoint_dir="./checkpoints/run-0/checkpoint-final"
+checkpoint_dir="./checkpoints/Nexus1.0-base/checkpoint-final"
 
 ulimit -n 99999
 
@@ -95,14 +95,14 @@ python scripts/patchtst/evaluate.py \
     eval.num_subdirs=null \
     eval.num_test_instances=6 \
     eval.window_style=sampled \
-    eval.batch_size=512 \
+    eval.batch_size=128 \
     eval.context_length=512 \
     eval.prediction_length=512 \
     eval.limit_prediction_length=false \
-    eval.metrics_save_dir=./eval_results/patchtst/ChaosNexus/test_example \
+    eval.metrics_save_dir=./eval_results/patchtst/NEXUS-test/test_example \
     eval.metrics_fname=metrics \
     eval.overwrite=true \
-    eval.device=cuda:0 \
-    eval.save_labels=true \
-    eval.save_predictions=true \
-    eval.save_contexts=true
+    eval.device=cuda:6 \
+    eval.save_labels=false \
+    eval.save_predictions=false \
+    eval.save_contexts=false \

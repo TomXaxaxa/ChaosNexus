@@ -27,9 +27,13 @@ eval:
     - mse
     - mae
     - smape
-    - spearman
+#    - spearman
+#    - ME-APE
+    - ME-LRw
+    - max_lyap_gt
+    - max_lyap_pred
+    - kld11
     - gd_rmse
-    - kld
 
   forecast_save_dir: null
   labels_save_dir: null
@@ -59,7 +63,7 @@ eval:
   # (in this case, num_test_instances need not be specified - always 1)
   num_test_instances: 1 # number of context windows to use for evaluation
   window_style: sampled
-  window_stride: 1
+  window_stride: 1024
   split_coords: false
   verbose: false
 
